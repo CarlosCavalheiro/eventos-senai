@@ -12,7 +12,7 @@ namespace API.Models
         public int IdEvento { get; set; }
 
         [Column("descricao")]
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
         [Column("data_evento")]
         public DateTime DataEvento { get; set; }
@@ -21,12 +21,12 @@ namespace API.Models
         public int TotalIngressos { get; set; }
 
         [Column("imagem_url")]
-        public string ImagemURL { get; set; }
+        public string? ImagemURL { get; set; }
 
         [Column("local")]
-        public string Local { get; set; }
+        public string? Local { get; set; }
 
         [Column("status")]
-        public int Status { get; set; }
+        public int Ativo { get; set; }
     }
 }
