@@ -460,19 +460,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Carlos Cavalheiro\\.nuget\\packages\\": {}
+    "C:\\Users\\Suporte\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projetos\\eventos-senai\\API\\API.csproj",
+      "projectUniqueName": "C:\\codigos\\eventos-senai\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "C:\\Projetos\\eventos-senai\\API\\API.csproj",
-      "packagesPath": "C:\\Users\\Carlos Cavalheiro\\.nuget\\packages\\",
-      "outputPath": "C:\\Projetos\\eventos-senai\\API\\obj\\",
+      "projectPath": "C:\\codigos\\eventos-senai\\API\\API.csproj",
+      "packagesPath": "C:\\Users\\Suporte\\.nuget\\packages\\",
+      "outputPath": "C:\\codigos\\eventos-senai\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Carlos Cavalheiro\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Suporte\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
