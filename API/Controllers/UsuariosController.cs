@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Repository;
+using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using API.DAO;
 
 namespace API.Controllers
+
 {
-    [Route("[controller]")]
-    public class UsuariosController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsuariosController : ControllerBase
     {
-        private readonly ILogger<UsuariosController> _logger;
+        private readonly UsuariosDAO _usuarioDAO;
 
-        public UsuariosController(ILogger<UsuariosController> logger)
+        public UsuariosController()
         {
-            _logger = logger;
+            _usuarioDAO = new UsuariosDAO();
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public async Task<IActionResult> GetUsuarios()
+    {
+        var usuarios = await _usuarioDAO.GetUsuarios();
+        return Ok(usuarios);
+    } 
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
-        }
     }
 }
