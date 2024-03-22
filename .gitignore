@@ -3,3 +3,5 @@
 # Ignora pastas
 .bin/
 .obj/
+API/obj/
+API/bin/
