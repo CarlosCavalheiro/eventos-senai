@@ -24,7 +24,7 @@ namespace API.DAO
 
             try{
                 connection.Open();
-                var result = await connection.QueryAsync<dynamic>(query);
+                var result = await connection. (query);
                 return result.ToList();
             }
         }
@@ -38,7 +38,7 @@ namespace API.DAO
         public async Task<bool> Insert(Usuario usuario)
         {
             var query = "INSERT INTO usuarios (nome_completo, email, senha, telefone, perfil) VALUES (@NomeCompleto, @Email, @Senha, @Telefone, @Perfil)";
-            var result = await _connection.ExecuteAsync(query, usuario);
+            var result = await connection.ExecuteAsync(query, usuario);
             return result > 0;
         }
         /// <summary>
