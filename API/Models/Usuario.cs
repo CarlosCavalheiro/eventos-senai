@@ -24,9 +24,9 @@ namespace API.Models
         public string Telefone { get; set; }
 
         [Column("perfil")]
-        public string perfil { get; set; }
+        public string Perfil { get; set; }
 
         [Column("status")]
-        public int Status { get; set; }
+        public int Ativo { get; set; }
     }
 }

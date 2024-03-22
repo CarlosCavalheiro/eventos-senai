@@ -8,6 +8,7 @@ using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using API.DAO;
+using API.Models;
 
 namespace API.Controllers
 
@@ -24,10 +25,20 @@ namespace API.Controllers
         }
 
         public async Task<IActionResult> GetUsuarios()
-    {
-        var usuarios = await _usuarioDAO.GetUsuarios();
-        return Ok(usuarios);
-    } 
+        {
+            var usuarios = _usuarioDAO.GetAll();
+            return Ok(usuarios);
+        } 
+
+        [HttpGet("{id}")]
+        public IActionResult GetUsuarioById(int id)
+        {
+            var usuario = _usuarioDAO.GetUsuarioById(id);
+            if (usuario == null)
+                return NotFound();
+            
+            return Ok(usuario);
+        }
 
     }
 }

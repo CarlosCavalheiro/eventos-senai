@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Models;
@@ -10,50 +11,96 @@ namespace API.DAO
 {
     public class UsuariosDAO
     {
-        private readonly MySqlConnection connection ;
+        private  MySqlConnection connection ;
 
         public UsuariosDAO()
         {
             connection =  MySqlConnectionFactory.GetConnection();
         }
         
-        
-        public async Task<List<dynamic>> GetUsuarios()
+        public List<Usuario> GetAll()
         {
+            List<Usuario> usuarios = new List<Usuario>();
             string query = "SELECT * FROM usuarios";
-
-            try{
+            
+            try
+            {
                 connection.Open();
-                var result = await connection. (query);
-                return result.ToList();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Usuario usuario = new Usuario();
+                        usuario.IdUsuario = reader.GetInt32("id");
+                        usuario.NomeCompleto = reader.IsDBNull("nome_completo") ? "" : reader.GetString("nome_completo");
+                        usuario.Email = reader.IsDBNull("email") ? "" : reader.GetString("email");
+                        usuario.Senha = reader.IsDBNull("senha") ? "" : reader.GetString("senha");
+                        usuario.Telefone = reader.IsDBNull("Telefone") ? "" : reader.GetString("telefone");
+                        usuario.Perfil = reader.IsDBNull("perfil") ? "" : reader.GetString("perfil");
+                        usuario.Ativo = reader.GetInt32("ativo");
+                        usuarios.Add(usuario);
+                    }
+                }
             }
-        }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
 
-        /// <summary>
-        /// Método responsável por realizar a inserção de um novo usuário no banco de dados.
-        /// </summary>
-        /// <param name="usuario">Objeto do tipo Usuario.</param>
-        /// <returns>Retorna verdadeiro caso a inserção seja realizada com sucesso.</returns>
-        /// <remarks>Este método é assíncrono.</remarks>
-        public async Task<bool> Insert(Usuario usuario)
-        {
-            var query = "INSERT INTO usuarios (nome_completo, email, senha, telefone, perfil) VALUES (@NomeCompleto, @Email, @Senha, @Telefone, @Perfil)";
-            var result = await connection.ExecuteAsync(query, usuario);
-            return result > 0;
+            return usuarios;
         }
-        /// <summary>
-        /// Método responsável por realizar a busca de um usuário específico no banco de dados.
-        /// </summary>
-        /// <param name="id">Identificador do usuário.</param>
-        /// <returns>Retorna o usuário encontrado.</returns>
-        /// <remarks>Este método é assíncrono.</remarks>
-        public async Task<Usuario> GetUsuario(int id)
+        public Usuario GetUsuarioById(int id)
         {
-            var query = "SELECT * FROM usuarios WHERE id = @Id";
-            var result = await _connection.QueryFirstOrDefaultAsync<Usuario>(query, new { Id = id });
-            return result;
-        }
+            Usuario usuario = new Usuario();
+            var query = $"SELECT * FROM usuarios WHERE id_usuario = {id}";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        usuario.IdUsuario = reader.GetInt32("id");
+                        usuario.NomeCompleto = reader.IsDBNull("nome_completo") ? "" : reader.GetString("nome_completo");
+                        usuario.Email = reader.IsDBNull("email") ? "" : reader.GetString("email");
+                        usuario.Senha = reader.IsDBNull("senha") ? "" : reader.GetString("senha");
+                        usuario.Telefone = reader.IsDBNull("Telefone") ? "" : reader.GetString("telefone");
+                        usuario.Perfil = reader.IsDBNull("perfil") ? "" : reader.GetString("perfil");
+                        usuario.Ativo = reader.GetInt32("ativo");
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
 
-         
+            }
+            return usuario;
+        }
     }
 }
+
+            
