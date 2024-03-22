@@ -15,3 +15,4 @@ API/obj/Debug/net8.0/API.AssemblyInfo.cs
 API/obj/Debug/net8.0/API.AssemblyInfoInputs.cache
 API/obj/Debug/net8.0/API.assets.cache
 API/obj/Debug/net8.0/API.csproj.AssemblyReference.cache
+API/Repository/MySqlConnectionFactory.cs
