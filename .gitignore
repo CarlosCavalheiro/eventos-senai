@@ -5,3 +5,4 @@
 .obj/
 API/obj/
 API/bin/
+API/Repository/MySqlConnectionFactory.cs
