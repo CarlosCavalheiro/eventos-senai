@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\codigos\\eventos-senai\\API\\API.csproj": {}
+    "C:\\Projetos\\eventos-senai\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\codigos\\eventos-senai\\API\\API.csproj": {
+    "C:\\Projetos\\eventos-senai\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\codigos\\eventos-senai\\API\\API.csproj",
+        "projectUniqueName": "C:\\Projetos\\eventos-senai\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\codigos\\eventos-senai\\API\\API.csproj",
-        "packagesPath": "C:\\Users\\Suporte\\.nuget\\packages\\",
-        "outputPath": "C:\\codigos\\eventos-senai\\API\\obj\\",
+        "projectPath": "C:\\Projetos\\eventos-senai\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\Carlos Cavalheiro\\.nuget\\packages\\",
+        "outputPath": "C:\\Projetos\\eventos-senai\\API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Suporte\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Carlos Cavalheiro\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -46,6 +46,10 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.2, )"
+            },
+            "Mysql.Data": {
+              "target": "Package",
+              "version": "[8.3.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
