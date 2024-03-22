@@ -1,0 +1,5 @@
+# Ignora extensões
+
+# Ignora pastas
+.bin/
+.obj/
