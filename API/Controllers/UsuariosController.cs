@@ -8,7 +8,6 @@ using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using API.DAO;
-using API.Models;
 
 namespace API.Controllers
 
@@ -17,19 +16,20 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
-        private readonly UsuariosDAO _usuarioDAO;
+        private UsuariosDAO _usuarioDAO;
 
         public UsuariosController()
         {
             _usuarioDAO = new UsuariosDAO();
         }
 
-        public async Task<IActionResult> GetUsuarios()
+        [HttpGet]
+        public IActionResult Get()
         {
             var usuarios = _usuarioDAO.GetAll();
             return Ok(usuarios);
-        } 
-
+        }
+        
         [HttpGet("{id}")]
         public IActionResult GetUsuarioById(int id)
         {
@@ -38,6 +38,37 @@ namespace API.Controllers
                 return NotFound();
             
             return Ok(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult CreateUsuario(Usuario usuario)
+        {
+            _usuarioDAO.CreateUsuario(usuario);
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUsuario(int id, [FromBody] Usuario usuario)
+        {
+            var existingUsuario = _usuarioDAO.GetUsuarioById(id);
+
+            if (existingUsuario == null)
+                return NotFound();
+
+            _usuarioDAO.UpdateUsuario(id, usuario);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")] 
+        public IActionResult DeleteUsuario(int id)
+        {
+            var existingUsuario = _usuarioDAO.GetUsuarioById(id);
+
+            if (existingUsuario == null)
+                return NotFound();
+
+            _usuarioDAO.DeleteUsuario(id);
+            return Ok();
         }
 
     }

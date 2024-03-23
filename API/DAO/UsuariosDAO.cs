@@ -21,7 +21,7 @@ namespace API.DAO
         public List<Usuario> GetAll()
         {
             List<Usuario> usuarios = new List<Usuario>();
-            string query = "SELECT * FROM usuarios";
+            string query = "SELECT * FROM usuario";
             
             try
             {
@@ -32,7 +32,7 @@ namespace API.DAO
                     while (reader.Read())
                     {
                         Usuario usuario = new Usuario();
-                        usuario.IdUsuario = reader.GetInt32("id");
+                        usuario.IdUsuario = reader.GetInt32("id_usuario");
                         usuario.NomeCompleto = reader.IsDBNull("nome_completo") ? "" : reader.GetString("nome_completo");
                         usuario.Email = reader.IsDBNull("email") ? "" : reader.GetString("email");
                         usuario.Senha = reader.IsDBNull("senha") ? "" : reader.GetString("senha");
@@ -63,7 +63,7 @@ namespace API.DAO
         public Usuario GetUsuarioById(int id)
         {
             Usuario usuario = new Usuario();
-            var query = $"SELECT * FROM usuarios WHERE id_usuario = {id}";
+            var query = $"SELECT * FROM usuario WHERE id_usuario = {id}";
             
             try
             {
@@ -73,7 +73,7 @@ namespace API.DAO
                 {
                     while (reader.Read())
                     {
-                        usuario.IdUsuario = reader.GetInt32("id");
+                        usuario.IdUsuario = reader.GetInt32("id_usuario");
                         usuario.NomeCompleto = reader.IsDBNull("nome_completo") ? "" : reader.GetString("nome_completo");
                         usuario.Email = reader.IsDBNull("email") ? "" : reader.GetString("email");
                         usuario.Senha = reader.IsDBNull("senha") ? "" : reader.GetString("senha");
@@ -100,6 +100,100 @@ namespace API.DAO
             }
             return usuario;
         }
+
+        public void CreateUsuario(Usuario usuario)
+        {
+            string query = "INSERT INTO usuario (nome_completo, email, senha, telefone, perfil) VALUES (@nome_completo, @email, @senha, @telefone, @perfil)";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@nome_completo", usuario.NomeCompleto);
+                command.Parameters.AddWithValue("@email", usuario.Email);
+                command.Parameters.AddWithValue("@senha", usuario.Senha);
+                command.Parameters.AddWithValue("@telefone", usuario.Telefone);
+                command.Parameters.AddWithValue("@perfil", usuario.Perfil);
+                //command.Parameters.AddWithValue("@ativo", usuario.Ativo);
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro ao inserir usuário: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void UpdateUsuario(int id, Usuario usuario)
+        {
+            string query = "UPDATE usuario SET nome_completo = @nome_completo, email = @email, senha = @senha, telefone = @telefone, perfil = @perfil, ativo = @ativo WHERE id_usuario = @id_usuario";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@nome_completo", usuario.NomeCompleto);
+                command.Parameters.AddWithValue("@email", usuario.Email);
+                command.Parameters.AddWithValue("@senha", usuario.Senha);
+                command.Parameters.AddWithValue("@telefone", usuario.Telefone);
+                command.Parameters.AddWithValue("@perfil", usuario.Perfil);
+                command.Parameters.AddWithValue("@ativo", usuario.Ativo);
+                command.Parameters.AddWithValue("@id_usuario", id);
+                //command.Parameters.AddWithValue("@id_usuario", usuario.IdUsuario);
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro ao atualizar usuário: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void DeleteUsuario(int id)
+        {
+            string query = $"DELETE FROM usuario WHERE id_usuario = {id}";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro ao deletar usuário: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
     }
 }
 
