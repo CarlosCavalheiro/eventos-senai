@@ -29,4 +29,9 @@ namespace API.Models
         [Column("ativo")]
         public int Ativo { get; set; }
     }
+
+    public class EventoDTO
+    {
+        public int IdEvento { get; set; }
+    }
 }

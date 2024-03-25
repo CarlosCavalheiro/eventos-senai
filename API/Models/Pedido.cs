@@ -35,5 +35,7 @@ namespace API.Models
 
         public Usuario? Usuario { get; set; }
 
+        public List<Ingresso> Ingressos { get; set; } = new();
+
     }
 }

@@ -13,10 +13,12 @@ namespace API.Controllers
     public class PedidoController : ControllerBase
     {
         private PedidoDAO _pedidoDAO;
+        private IngressoDAO _ingressoDAO;
 
         public PedidoController()
         {
             _pedidoDAO = new PedidoDAO();
+            _ingressoDAO = new IngressoDAO();
         }
 
         [HttpGet]
@@ -39,8 +41,24 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreatePedido(Pedido pedido)
         {
-            _pedidoDAO.CreatePedido(pedido);
+            try{
+            
+            var pedidoCriado = _pedidoDAO.CreatePedido(pedido);
+
+            foreach (var ingresso in pedido.Ingressos)
+            {
+                ingresso.IdPedido = pedidoCriado.IdPedido;
+                _ingressoDAO.CreateIngresso(ingresso);
+            }
+
+            
             return Ok();
+
+            }catch(Exception e){
+                return BadRequest(e.Message);                
+
+            }
+
         }
 
         [HttpPut("{id}")]

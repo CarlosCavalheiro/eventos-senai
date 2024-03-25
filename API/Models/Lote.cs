@@ -16,7 +16,7 @@ namespace API.Models
         public string? Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
-        public Evento Evento { get; set; }
+        public EventoInput EventoInput { get; set; }
         
     }
 }

@@ -114,7 +114,7 @@ namespace API.DAO
             try
             {
                 lote.Saldo = lote.QuantidadeTotal;
-                lote.IdEvento = lote.Evento.IdEvento;
+                lote.IdEvento = lote.EventoInput.IdEvento;
 
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
@@ -148,7 +148,7 @@ namespace API.DAO
         // Método para atualizar um lote
         public void UpdateLote(int id, Lote lote)
         {
-            lote.IdEvento = lote.Evento.IdEvento;
+            lote.IdEvento = lote.EventoInput.IdEvento;
             string query = $"UPDATE lote SET id_evento = {lote.IdEvento}, valor_unitario = {lote.ValorUnitario}, quantidade_total = {lote.QuantidadeTotal}, saldo = {lote.Saldo}, ativo = {lote.ativo}, descricao = '{lote.Descricao}', data_inicio = '{lote.DataInicio.ToString("yyyy-MM-dd")}', data_fim = '{lote.DataFim.ToString("yyyy-MM-dd")}' WHERE id_lote = {id}";
             
             try

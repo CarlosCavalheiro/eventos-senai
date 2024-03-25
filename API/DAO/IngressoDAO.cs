@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Models;
@@ -8,21 +9,19 @@ using MySql.Data.MySqlClient;
 
 namespace API.DAO
 {
-    public class PedidoDAO
+    public class IngressoDAO
     {
-        //cria objeto de acesso a dados de pedido
         private MySqlConnection connection ;
 
-        public PedidoDAO()
+        public IngressoDAO()
         {
             connection =  MySqlConnectionFactory.GetConnection();
         }
 
-        //método para listar todos os pedidos
-        public List<Pedido> GetAll()
+        public List<Ingresso> GetAll()
         {
-            List<Pedido> pedidos = new List<Pedido>();
-            string query = "SELECT * FROM pedido";
+            List<Ingresso> ingressos = new List<Ingresso>();
+            string query = "SELECT * FROM ingresso";
             
             try
             {
@@ -32,16 +31,14 @@ namespace API.DAO
                 {
                     while (reader.Read())
                     {
-                        Pedido pedido = new Pedido();
-                        pedido.IdPedido = reader.GetInt32("id_pedido");
-                        pedido.IdUsuario = reader.GetInt32("usuario_id_usuario");
-                        pedido.ValidacaoIdUsuario = reader.GetInt32("validacao_id_usuario");
-                        pedido.Data = reader.GetDateTime("data");
-                        pedido.Total = reader.GetDouble("total");
-                        pedido.Quantidade = reader.GetInt32("quantidade");
-                        pedido.FormaPagamento = reader.GetString("forma_pagamento");
-                        pedido.Status = reader.GetString("status");
-                        pedidos.Add(pedido);
+                        Ingresso ingresso = new Ingresso();
+                        ingresso.IdIngresso = reader.GetInt32("id_ingresso");
+                        ingresso.CodigoQR = reader.IsDBNull("codigo_qr") ? "" : reader.GetString("codigo_qr");
+                        ingresso.Valor = reader.GetDouble("valor");
+                        ingresso.Status = reader.IsDBNull("status") ? "" : reader.GetString("status");
+                        ingresso.Tipo = reader.IsDBNull("tipo") ? "" : reader.GetString("tipo");
+                        ingresso.DataUtilizacao = reader.GetDateTime("data_utilizacao");
+                        ingressos.Add(ingresso);
                     }
                 }
             }
@@ -59,34 +56,31 @@ namespace API.DAO
             {
                 connection.Close();
             }
-            return pedidos;
+
+            return ingressos;
         }
 
-        //método para buscar pedido por id
-        public Pedido GetPedidoById(int id)
+        public Ingresso GetIngressoById(int id)
         {
-            Pedido pedido = new Pedido();
-            UsuariosDAO usuariosDAO = new UsuariosDAO();
-            var query = $"SELECT * FROM pedido WHERE id_pedido = {id}";
+            Ingresso ingresso = new Ingresso();
+            string query = "SELECT * FROM ingresso WHERE id_ingresso = @id";
             
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@id", id);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if (reader.Read())
                     {
-                        pedido.IdPedido = reader.GetInt32("id_pedido");
-                        pedido.IdUsuario = reader.GetInt32("usuario_id_usuario");
-                        pedido.ValidacaoIdUsuario = reader.GetInt32("validacao_id_usuario");
-                        pedido.Data = reader.GetDateTime("data");
-                        pedido.Total = reader.GetDouble("total");
-                        pedido.Quantidade = reader.GetInt32("quantidade");
-                        pedido.FormaPagamento = reader.GetString("forma_pagamento");
-                        pedido.Status = reader.GetString("status");
-                        pedido.Usuario = new Usuario();
-                        pedido.Usuario = usuariosDAO.GetUsuarioById(pedido.IdUsuario);
+                        ingresso = new Ingresso();
+                        ingresso.IdIngresso = reader.GetInt32("id_ingresso");
+                        ingresso.CodigoQR = reader.IsDBNull("codigo_qr") ? "" : reader.GetString("codigo_qr");
+                        ingresso.Valor = reader.GetDouble("valor");
+                        ingresso.Status = reader.IsDBNull("status") ? "" : reader.GetString("status");
+                        ingresso.Tipo = reader.IsDBNull("tipo") ? "" : reader.GetString("tipo");
+                        ingresso.DataUtilizacao = reader.GetDateTime("data_utilizacao");
                     }
                 }
             }
@@ -104,61 +98,25 @@ namespace API.DAO
             {
                 connection.Close();
             }
-            return pedido;
+
+            return ingresso;
         }
 
-        //método para inserir pedido no BD
-        public Pedido CreatePedido(Pedido pedido)
+        public void CreateIngresso(Ingresso ingresso)
         {
-            string query = "INSERT INTO pedido (usuario_id_usuario, validacao_id_usuario, data, total, quantidade, forma_pagamento, status) VALUES (@usuario_id_usuario, @validacao_id_usuario, @data, @total, @quantidade, @forma_pagamento, @status)";
-            
+            string query = "INSERT INTO ingresso (codigo_qr, valor, status, tipo, data_utilizacao, pedido_id_pedido, lote_id_lote) VALUES (@codigo_qr, @valor, @status, @tipo, @data_utilizacao, @pedido_id_pedido, @lote_id_lote)";
+
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@usuario_id_usuario", pedido.IdUsuario);
-                command.Parameters.AddWithValue("@validacao_id_usuario", pedido.ValidacaoIdUsuario);
-                command.Parameters.AddWithValue("@data", pedido.Data);
-                command.Parameters.AddWithValue("@total", pedido.Total);
-                command.Parameters.AddWithValue("@quantidade", pedido.Quantidade);
-                command.Parameters.AddWithValue("@forma_pagamento", pedido.FormaPagamento);
-                command.Parameters.AddWithValue("@status", pedido.Status);
-                command.ExecuteNonQuery();
-            }
-            catch (MySqlException ex)
-            {
-                // Aqui você pode tratar exceções específicas do MySQL
-                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                // Aqui você trata outras exceções gerais
-                Console.WriteLine($"Erro desconhecido: {ex.Message}");
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return pedido;
-        }
-
-        //método para atualizar pedido no BD
-        public void UpdatePedido(int id, Pedido pedido)
-        {
-            string query = "UPDATE pedido SET usuario_id_usuario = @usuario_id_usuario, validacao_id_usuario = @validacao_id_usuario, data = @data, total = @total, quantidade = @quantidade, forma_pagamento = @forma_pagamento, status = @status WHERE id_pedido = @id_pedido";
-            
-            try
-            {
-                connection.Open();
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@usuario_id_usuario", pedido.IdUsuario);
-                command.Parameters.AddWithValue("@validacao_id_usuario", pedido.ValidacaoIdUsuario);
-                command.Parameters.AddWithValue("@data", pedido.Data);
-                command.Parameters.AddWithValue("@total", pedido.Total);
-                command.Parameters.AddWithValue("@quantidade", pedido.Quantidade);
-                command.Parameters.AddWithValue("@forma_pagamento", pedido.FormaPagamento);
-                command.Parameters.AddWithValue("@status", pedido.Status);
-                command.Parameters.AddWithValue("@id_pedido", id);
+                command.Parameters.AddWithValue("@codigo_qr", ingresso.CodigoQR);
+                command.Parameters.AddWithValue("@valor", ingresso.Valor);
+                command.Parameters.AddWithValue("@status", ingresso.Status);
+                command.Parameters.AddWithValue("@tipo", ingresso.Tipo);
+                command.Parameters.AddWithValue("@data_utilizacao", ingresso.DataUtilizacao);
+                command.Parameters.AddWithValue("@pedido_id_pedido", ingresso.IdPedido);
+                command.Parameters.AddWithValue("@lote_id_lote", ingresso.IdLote);
                 command.ExecuteNonQuery();
             }
             catch (MySqlException ex)
@@ -177,15 +135,22 @@ namespace API.DAO
             }
         }
 
-        //método para deletar pedido no BD
-        public void DeletePedido(int id)
+        public void UpdateIngresso(int id, Ingresso ingresso)
         {
-            string query = $"DELETE FROM pedido WHERE id_pedido = {id}";
+            string query = "UPDATE ingresso SET codigo_qr = @codigo_qr, valor = @valor, status = @status, tipo = @tipo, data_utilizacao = @data_utilizacao WHERE id_ingresso = @id";
             
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@codigo_qr", ingresso.CodigoQR);
+                command.Parameters.AddWithValue("@valor", ingresso.Valor);
+                command.Parameters.AddWithValue("@status", ingresso.Status);
+                command.Parameters.AddWithValue("@tipo", ingresso.Tipo);
+                command.Parameters.AddWithValue("@data_utilizacao", ingresso.DataUtilizacao);                
+                command.Parameters.AddWithValue("@pedido_id_pedido", ingresso.IdPedido);
+                command.Parameters.AddWithValue("@lote_id_lote", ingresso.IdLote);
+                command.Parameters.AddWithValue("@id", id);
                 command.ExecuteNonQuery();
             }
             catch (MySqlException ex)
@@ -203,5 +168,35 @@ namespace API.DAO
                 connection.Close();
             }
         }
+
+        public void DeleteIngresso(int id)
+        {
+            string query = "DELETE FROM ingresso WHERE id_ingresso = @id";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        
+        
     }
 }
