@@ -8,11 +8,14 @@ namespace API.Models
     public class Lote
     {
         public int IdLote { get; set; }
-        public string Nome { get; set; }
+        public int IdEvento { get; set; }
+        public double ValorUnitario  { get; set; }
+        public int QuantidadeTotal { get; set; }
+        public int Saldo { get; set; }
+        public int ativo { get; set; }
+        public string? Descricao { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
-        public int QtdIngressos { get; set; }
-        public int IdEvento { get; set; }
         public Evento Evento { get; set; }
         
     }

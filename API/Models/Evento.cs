@@ -26,7 +26,7 @@ namespace API.Models
         [Column("local")]
         public string? Local { get; set; }
 
-        [Column("status")]
+        [Column("ativo")]
         public int Ativo { get; set; }
     }
 }

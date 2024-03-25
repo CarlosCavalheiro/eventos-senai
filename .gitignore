@@ -19,3 +19,7 @@ API/Repository/MySqlConnectionFactory.cs
 *.dll
 /API/bin/Debug
 API/Repository/MySqlConnectionFactory.cs
+API/bin/Debug/net8.0/API.dll
+API/bin/Debug/net8.0/API.exe
+API/bin/Debug/net8.0/API.pdb
+*.cache

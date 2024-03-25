@@ -39,7 +39,7 @@ namespace API.DAO
                         evento.TotalIngressos = reader.GetInt32("total_ingressos");
                         evento.ImagemURL = reader.IsDBNull("imagem_url") ? "" : reader.GetString("imagem_url"); 
                         evento.Local = reader.IsDBNull("local") ? "" : reader.GetString("local");
-                        evento.Ativo = reader.GetInt32("status");
+                        evento.Ativo = reader.GetInt32("ativo");
                         eventos.Add(evento);
                         
                     }
@@ -83,7 +83,7 @@ namespace API.DAO
                         evento.TotalIngressos = reader.GetInt32("total_ingressos");
                         evento.ImagemURL = reader.IsDBNull("imagem_url") ? "" : reader.GetString("imagem_url"); 
                         evento.Local = reader.IsDBNull("local") ? "" : reader.GetString("local");
-                        evento.Ativo = reader.GetInt32("status"); 
+                        evento.Ativo = reader.GetInt32("ativo"); 
 
                     }
                 }
@@ -107,7 +107,7 @@ namespace API.DAO
 
         public void CreateEvento(Evento evento)
         {
-            string query = "INSERT INTO evento (descricao, data_evento, total_ingressos, imagem_url, local, status) VALUES (@descricao, @data_evento, @total_ingressos, @imagem_url, @local, @status)";
+            string query = "INSERT INTO evento (descricao, data_evento, total_ingressos, imagem_url, local, ativo) VALUES (@descricao, @data_evento, @total_ingressos, @imagem_url, @local, @ativo)";
 
             try
             {
@@ -118,7 +118,7 @@ namespace API.DAO
                 command.Parameters.AddWithValue("@total_ingressos", evento.TotalIngressos);
                 command.Parameters.AddWithValue("@imagem_url", evento.ImagemURL);
                 command.Parameters.AddWithValue("@local", evento.Local);
-                command.Parameters.AddWithValue("@status", evento.Ativo);
+                command.Parameters.AddWithValue("@ativo", evento.Ativo);
                 command.ExecuteNonQuery();
             }
             catch (MySqlException ex)
@@ -137,20 +137,19 @@ namespace API.DAO
 
         public void UpdateEvento(int id, Evento evento)
         {
-            string query = "UPDATE evento SET descricao = @descricao, data_evento = @data_evento, total_ingressos = @total_ingressos, imagem_url = @imagem_url, local = @local, status = @status WHERE id_evento = @id_evento";
-
+            string query = "UPDATE evento SET descricao = @descricao, data_evento = @data_evento, total_ingressos = @total_ingressos, imagem_url = @imagem_url, local = @local, ativo = @ativo WHERE id_evento = @id_evento";
+            
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@id_evento", id);
                 command.Parameters.AddWithValue("@descricao", evento.Descricao);
-                command.Parameters.AddWithValue("@data_evento", evento.DataEvento);
                 command.Parameters.AddWithValue("@total_ingressos", evento.TotalIngressos);
+                command.Parameters.AddWithValue("@data_evento", evento.DataEvento);
                 command.Parameters.AddWithValue("@imagem_url", evento.ImagemURL);
                 command.Parameters.AddWithValue("@local", evento.Local);
-                command.Parameters.AddWithValue("@status", evento.Ativo);
-                command.Parameters.AddWithValue("@id_evento", evento.IdEvento);
+                command.Parameters.AddWithValue("@ativo", evento.Ativo);                
+                command.Parameters.AddWithValue("@id_evento", id);
                 command.ExecuteNonQuery();
             }
             catch (MySqlException ex)
