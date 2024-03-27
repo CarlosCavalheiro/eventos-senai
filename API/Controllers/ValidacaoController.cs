@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DAO;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -42,6 +43,15 @@ namespace API.Controllers
             } else {
                 return Ok("Ingresso indisponivel ou já foi validado!");
             }
+        }
+
+        //endpoint para retornar todos os ingressos disponiveis a serem validados
+        //[Authorize(Policy ="PodeValidar")]//policies para autorizar o usuario a acessar o endpoint
+        [HttpGet("{status}")]
+        public ActionResult<IEnumerable<Ingresso>> GetIngressosDisponiveis(string status)
+        {
+            var ingressos = _ingressoDAO.GetIngressosBy(status);
+            return Ok(ingressos);
         }
 
         
