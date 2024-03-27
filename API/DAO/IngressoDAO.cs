@@ -112,7 +112,7 @@ namespace API.DAO
                 MySqlCommand command = new MySqlCommand(query, connection);
                 //command.Parameters.AddWithValue("@codigo_qr", ingresso.CodigoQR);
                 //criar um código QR aleatório para o ingresso usando guid com 6 caracteres
-                command.Parameters.AddWithValue("@codigo_qr", Guid.NewGuid().ToString().Substring(0, 6));
+                command.Parameters.AddWithValue("@codigo_qr", Guid.NewGuid().ToString());
                 command.Parameters.AddWithValue("@valor", ingresso.Valor);
                 command.Parameters.AddWithValue("@status", ingresso.Status);
                 command.Parameters.AddWithValue("@tipo", ingresso.Tipo);
@@ -198,7 +198,45 @@ namespace API.DAO
             }
         }
 
-        
+        public Ingresso GetIngressoByCodigoQR(string codigo_qr){
+            Ingresso ingresso = new Ingresso();
+            string query = "SELECT * FROM ingresso WHERE codigo_qr = @codigo_qr";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@codigo_qr", codigo_qr);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        ingresso = new Ingresso();
+                        ingresso.IdIngresso = reader.GetInt32("id_ingresso");
+                        ingresso.CodigoQR = reader.IsDBNull("codigo_qr") ? "" : reader.GetString("codigo_qr");
+                        ingresso.Valor = reader.GetDouble("valor");
+                        ingresso.Status = reader.IsDBNull("status") ? "" : reader.GetString("status");
+                        ingresso.Tipo = reader.IsDBNull("tipo") ? "" : reader.GetString("tipo");
+                        ingresso.DataUtilizacao = reader.GetDateTime("data_utilizacao");
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+        }
+        return ingresso;
+        } 
         
     }
 }
