@@ -10,7 +10,7 @@ namespace API.Models
     {
         [Column("id_lote")]
         public int IdLote { get; set; }
-        [ForeignKey("id_evento")]
+        [ForeignKey("evento_id_evento")]
         public int IdEvento { get; set; }
         [Column("valor_unitario")]
         public double ValorUnitario  { get; set; }
@@ -21,7 +21,7 @@ namespace API.Models
         [Column("ativo")]
         public int ativo { get; set; }
         [Column("descricao")]
-        public string? Descricao { get; set; }
+        public string Descricao { get; set; }
         [Column("data_inicio")]
         public DateTime DataInicio { get; set; }
         [Column("data_fim")]

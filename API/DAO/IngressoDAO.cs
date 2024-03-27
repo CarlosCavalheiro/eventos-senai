@@ -105,12 +105,14 @@ namespace API.DAO
         public void CreateIngresso(Ingresso ingresso)
         {
             string query = "INSERT INTO ingresso (codigo_qr, valor, status, tipo, data_utilizacao, pedido_id_pedido, lote_id_lote) VALUES (@codigo_qr, @valor, @status, @tipo, @data_utilizacao, @pedido_id_pedido, @lote_id_lote)";
-
+            
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@codigo_qr", ingresso.CodigoQR);
+                //command.Parameters.AddWithValue("@codigo_qr", ingresso.CodigoQR);
+                //criar um código QR aleatório para o ingresso usando guid com 6 caracteres
+                command.Parameters.AddWithValue("@codigo_qr", Guid.NewGuid().ToString().Substring(0, 6));
                 command.Parameters.AddWithValue("@valor", ingresso.Valor);
                 command.Parameters.AddWithValue("@status", ingresso.Status);
                 command.Parameters.AddWithValue("@tipo", ingresso.Tipo);
@@ -122,7 +124,7 @@ namespace API.DAO
             catch (MySqlException ex)
             {
                 // Aqui você pode tratar exceções específicas do MySQL
-                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+                Console.WriteLine($"Ingresso - Erro ao acessar o banco de dados MySQL: {ex.Message}");
             }
             catch (Exception ex)
             {

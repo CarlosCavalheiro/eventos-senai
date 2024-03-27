@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Models;
 using API.Repository;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Security;
 
 namespace API.DAO
 {
@@ -19,9 +20,9 @@ namespace API.DAO
         }
 
         //método para listar todos os pedidos
-        public List<Pedido> GetAll()
+        public List<PedidoExibir> GetAll()
         {
-            List<Pedido> pedidos = new List<Pedido>();
+            List<PedidoExibir> pedidos = new List<PedidoExibir>();
             string query = "SELECT * FROM pedido";
             
             try
@@ -32,7 +33,7 @@ namespace API.DAO
                 {
                     while (reader.Read())
                     {
-                        Pedido pedido = new Pedido();
+                        PedidoExibir pedido = new PedidoExibir();
                         pedido.IdPedido = reader.GetInt32("id_pedido");
                         pedido.IdUsuario = reader.GetInt32("usuario_id_usuario");
                         pedido.ValidacaoIdUsuario = reader.GetInt32("validacao_id_usuario");
@@ -63,9 +64,9 @@ namespace API.DAO
         }
 
         //método para buscar pedido por id
-        public Pedido GetPedidoById(int id)
+        public PedidoExibir GetPedidoById(int id)
         {
-            Pedido pedido = new Pedido();
+            PedidoExibir pedido = new PedidoExibir();
             UsuariosDAO usuariosDAO = new UsuariosDAO();
             var query = $"SELECT * FROM pedido WHERE id_pedido = {id}";
             
@@ -110,7 +111,7 @@ namespace API.DAO
         //método para inserir pedido no BD
         public Pedido CreatePedido(Pedido pedido)
         {
-            string query = "INSERT INTO pedido (usuario_id_usuario, validacao_id_usuario, data, total, quantidade, forma_pagamento, status) VALUES (@usuario_id_usuario, @validacao_id_usuario, @data, @total, @quantidade, @forma_pagamento, @status)";
+            string query = "INSERT INTO pedido (usuario_id_usuario, validacao_id_usuario, total, quantidade, forma_pagamento, status) VALUES (@usuario_id_usuario, @validacao_id_usuario, @total, @quantidade, @forma_pagamento, @status)";
             
             try
             {
@@ -118,17 +119,18 @@ namespace API.DAO
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@usuario_id_usuario", pedido.IdUsuario);
                 command.Parameters.AddWithValue("@validacao_id_usuario", pedido.ValidacaoIdUsuario);
-                command.Parameters.AddWithValue("@data", pedido.Data);
+                //command.Parameters.AddWithValue("@data", pedido.Data);
                 command.Parameters.AddWithValue("@total", pedido.Total);
                 command.Parameters.AddWithValue("@quantidade", pedido.Quantidade);
                 command.Parameters.AddWithValue("@forma_pagamento", pedido.FormaPagamento);
                 command.Parameters.AddWithValue("@status", pedido.Status);
                 command.ExecuteNonQuery();
+                pedido.IdPedido = (int)command.LastInsertedId;
             }
             catch (MySqlException ex)
             {
                 // Aqui você pode tratar exceções específicas do MySQL
-                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+                Console.WriteLine($"Pedido - Erro ao acessar o banco de dados MySQL : {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -145,7 +147,7 @@ namespace API.DAO
         //método para atualizar pedido no BD
         public void UpdatePedido(int id, Pedido pedido)
         {
-            string query = "UPDATE pedido SET usuario_id_usuario = @usuario_id_usuario, validacao_id_usuario = @validacao_id_usuario, data = @data, total = @total, quantidade = @quantidade, forma_pagamento = @forma_pagamento, status = @status WHERE id_pedido = @id_pedido";
+            string query = "UPDATE pedido SET usuario_id_usuario = @usuario_id_usuario, validacao_id_usuario = @validacao_id_usuario, total = @total, quantidade = @quantidade, forma_pagamento = @forma_pagamento, status = @status WHERE id_pedido = @id_pedido";
             
             try
             {
@@ -153,7 +155,7 @@ namespace API.DAO
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@usuario_id_usuario", pedido.IdUsuario);
                 command.Parameters.AddWithValue("@validacao_id_usuario", pedido.ValidacaoIdUsuario);
-                command.Parameters.AddWithValue("@data", pedido.Data);
+                //command.Parameters.AddWithValue("@data", pedido.Data);
                 command.Parameters.AddWithValue("@total", pedido.Total);
                 command.Parameters.AddWithValue("@quantidade", pedido.Quantidade);
                 command.Parameters.AddWithValue("@forma_pagamento", pedido.FormaPagamento);
@@ -203,6 +205,33 @@ namespace API.DAO
                 connection.Close();
             }
         }
+        //método para criar os ingressos automaticamente e inserir o pedido com base na quantidade de ingressos
+        public void CreatePedidoAutomatico(Pedido pedido)
+        {
+            try{
+                
+                IngressoDAO _ingressoDAO = new IngressoDAO();
+                var pedidoCriado = CreatePedido(pedido);
+                
+                foreach (var ingresso in pedido.Ingressos)
+                {
+                    ingresso.IdPedido = pedidoCriado.IdPedido;
+                    _ingressoDAO.CreateIngresso(ingresso);
+                }
+
+            }catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally{connection.Close();};
+        }
+        
 
         
     }

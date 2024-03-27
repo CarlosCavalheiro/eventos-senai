@@ -26,15 +26,13 @@ namespace API.Models
         public string Tipo { get; set; }
 
         [Column("data_utilizacao")]
-        public DateTime DataUtilizacao { get; set; }
+        public DateTime? DataUtilizacao { get; set; }
 
         [ForeignKey("pedido_id_pedido")]
         public int IdPedido { get; set; }
-        public Pedido Pedido { get; set; }
 
         [ForeignKey("lote_id_lote")]
         public int IdLote { get; set; }
-        public Lote Lote { get; set; }
         
         
     }

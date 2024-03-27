@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public class Pedido
+    public class PedidoExibir
     {
         //cria modelo de pedido de ingresso com campos necessários
         [Column("id_pedido")]
@@ -16,7 +16,7 @@ namespace API.Models
         public int IdUsuario { get; set; }
 
         [Column("data")]
-        public DateTime? Data { get; set; }
+        public DateTime Data { get; set; }
 
         [Column("total")]
         public double Total { get; set; }
@@ -33,7 +33,7 @@ namespace API.Models
         [Column("validacao_id_usuario")]
         public int ValidacaoIdUsuario { get; set; }
 
-        
+        public Usuario? Usuario { get; set; }
 
         public List<Ingresso> Ingressos { get; set; } = new();
 

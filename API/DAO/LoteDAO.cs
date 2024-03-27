@@ -36,7 +36,7 @@ namespace API.DAO
                     {
                         LoteExibir lote = new LoteExibir();
                         lote.IdLote = reader.GetInt32("id_lote");
-                        lote.IdEvento = reader.GetInt32("id_evento");
+                        lote.IdEvento = reader.GetInt32("evento_id_evento");
                         lote.ValorUnitario = reader.GetDouble("valor_unitario");
                         lote.QuantidadeTotal = reader.GetInt32("quantidade_total");
                         lote.Saldo = reader.GetInt32("saldo");
@@ -80,7 +80,7 @@ namespace API.DAO
                     if (reader.Read())
                     {
                         lote.IdLote = reader.GetInt32("id_lote");
-                        lote.IdEvento = reader.GetInt32("id_evento");
+                        lote.IdEvento = reader.GetInt32("evento_id_evento");
                         lote.ValorUnitario = reader.GetDouble("valor_unitario");
                         lote.QuantidadeTotal = reader.GetInt32("quantidade_total");
                         lote.Saldo = reader.GetInt32("saldo");
@@ -112,7 +112,7 @@ namespace API.DAO
         // Método para criar um lote
         public void CreateLote(Lote lote)
         {
-            string query = $"INSERT INTO lote (evento_id_evento, valor_unitario, quantidade_total, saldo, ativo, descricao, data_inicio, data_fim) VALUES (@evento_id_evento, @valor_unitario, @quantidade_total, @saldo, @ativo, '@descricao', '@data_inicio', '@data_fim')";
+            string query = $"INSERT INTO lote (evento_id_evento, valor_unitario, quantidade_total, saldo, ativo, descricao, data_inicio, data_fim) VALUES (@evento_id_evento, @valor_unitario, @quantidade_total, @saldo, @ativo, @descricao, @data_inicio, @data_fim)";
             
             try
             {
@@ -126,8 +126,8 @@ namespace API.DAO
                 command.Parameters.AddWithValue("@saldo", lote.Saldo);
                 command.Parameters.AddWithValue("@ativo", lote.ativo);
                 command.Parameters.AddWithValue("@descricao", lote.Descricao);
-                command.Parameters.AddWithValue("@data_inicio", lote.DataInicio.ToString("DD/MM/yyyy HH:mm:ss"));
-                command.Parameters.AddWithValue("@data_fim", lote.DataFim.ToString("DD/MM/yyyy HH:mm:ss"));
+                command.Parameters.AddWithValue("@data_inicio", lote.DataInicio);
+                command.Parameters.AddWithValue("@data_fim", lote.DataFim);
 
                 command.ExecuteNonQuery();
             }
@@ -150,13 +150,14 @@ namespace API.DAO
         // Método para atualizar um lote
         public void UpdateLote(Lote lote)
         {
-            string query = $"UPDATE lote SET valor_unitario = @valor_unitario', quantidade_total = @quantidade_total, saldo = @saldo, ativo = @ativo, descricao = '@descricao', data_inicio = '@data_inicio', data_fim = '@data_fim' WHERE id_lote = @id_evento";
+            string query = $"UPDATE lote SET valor_unitario = @valor_unitario, quantidade_total = @quantidade_total, saldo = @saldo, ativo = @ativo, descricao = @descricao, data_inicio = @data_inicio, data_fim = @data_fim, evento_id_evento = @evento_id_evento WHERE id_lote = @id_lote";
             
             try
             {
                 connection.Open();
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@id_evento", lote.IdEvento);
+                command.Parameters.AddWithValue("@id_lote", lote.IdLote);
+                command.Parameters.AddWithValue("@evento_id_evento", lote.IdEvento);
                 command.Parameters.AddWithValue("@valor_unitario", lote.ValorUnitario);
                 command.Parameters.AddWithValue("@quantidade_total", lote.QuantidadeTotal);
                 command.Parameters.AddWithValue("@saldo", lote.Saldo);

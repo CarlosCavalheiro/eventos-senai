@@ -41,23 +41,9 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreatePedido(Pedido pedido)
         {
-            try{
             
-            var pedidoCriado = _pedidoDAO.CreatePedido(pedido);
-
-            foreach (var ingresso in pedido.Ingressos)
-            {
-                ingresso.IdPedido = pedidoCriado.IdPedido;
-                _ingressoDAO.CreateIngresso(ingresso);
-            }
-
-            
+            _pedidoDAO.CreatePedidoAutomatico(pedido);            
             return Ok();
-
-            }catch(Exception e){
-                return BadRequest(e.Message);                
-
-            }
 
         }
 
