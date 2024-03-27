@@ -104,7 +104,7 @@ namespace API.DAO
 
         public void CreateIngresso(Ingresso ingresso)
         {
-            string query = "INSERT INTO ingresso (codigo_qr, valor, status, tipo, data_utilizacao, pedido_id_pedido, lote_id_lote) VALUES (@codigo_qr, @valor, @status, @tipo, @data_utilizacao, @pedido_id_pedido, @lote_id_lote)";
+            string query = "INSERT INTO ingresso (codigo_qr, valor, status, tipo, pedido_id_pedido, lote_id_lote) VALUES (@codigo_qr, @valor, @status, @tipo, @pedido_id_pedido, @lote_id_lote)";
             
             try
             {
@@ -114,9 +114,9 @@ namespace API.DAO
                 //criar um código QR aleatório para o ingresso usando guid com 6 caracteres
                 command.Parameters.AddWithValue("@codigo_qr", Guid.NewGuid().ToString());
                 command.Parameters.AddWithValue("@valor", ingresso.Valor);
-                command.Parameters.AddWithValue("@status", ingresso.Status);
+                command.Parameters.AddWithValue("@status", "RESERVADO");
                 command.Parameters.AddWithValue("@tipo", ingresso.Tipo);
-                command.Parameters.AddWithValue("@data_utilizacao", ingresso.DataUtilizacao);
+                //command.Parameters.AddWithValue("@data_utilizacao", ingresso.DataUtilizacao);
                 command.Parameters.AddWithValue("@pedido_id_pedido", ingresso.IdPedido);
                 command.Parameters.AddWithValue("@lote_id_lote", ingresso.IdLote);
                 command.ExecuteNonQuery();
@@ -217,7 +217,7 @@ namespace API.DAO
                         ingresso.Valor = reader.GetDouble("valor");
                         ingresso.Status = reader.IsDBNull("status") ? "" : reader.GetString("status");
                         ingresso.Tipo = reader.IsDBNull("tipo") ? "" : reader.GetString("tipo");
-                        ingresso.DataUtilizacao = reader.GetDateTime("data_utilizacao");
+                        ingresso.DataUtilizacao = reader.IsDBNull("data_utilizacao") ? DateTime.MinValue :reader.GetDateTime("data_utilizacao");
                     }
                 }
             }
