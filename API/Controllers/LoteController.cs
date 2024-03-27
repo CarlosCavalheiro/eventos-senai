@@ -51,7 +51,7 @@ namespace API.Controllers
             if (existingLote == null)
                 return NotFound();
 
-            _loteDAO.UpdateLote(id, lote);
+            _loteDAO.UpdateLote(lote);
             return Ok();
         }
 

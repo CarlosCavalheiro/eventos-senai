@@ -24,3 +24,5 @@ API/bin/Debug/net8.0/API.exe
 API/bin/Debug/net8.0/API.pdb
 *.cache
 *.cache
+*.dll
+*.exe

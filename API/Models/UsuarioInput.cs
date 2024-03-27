@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace API.Models
 {
-    public class EventoInput
+    public class UsuarioInput
     {
-        [Column("id_evento")]
-        public int IdEvento { get; set; }
-    
+        [Column("id_usuario")]
+        public int IdUsuario { get; set; }
     }
 }
