@@ -17,7 +17,7 @@ namespace API.Models
         [Column("email")]
         public string? Email { get; set; }
 
-        [Column("nome_completo")]
+        [Column("senha")]
         public string? Senha { get; set; }
 
         [Column("telefone")]
