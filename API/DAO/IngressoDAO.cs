@@ -236,8 +236,8 @@ namespace API.DAO
         }
         return ingresso;
         } 
-        public Ingresso GetIngressoByUsuario(int IdUsuario){
-            Ingresso ingresso = new Ingresso();
+        public List<Ingresso> GetIngressoByUsuario(int IdUsuario){
+            List<Ingresso> ingressos = new List<Ingresso>();
             string query = "SELECT * FROM ingresso WHERE usuario_id_usuario = @usuario_id_usuario";
             
             try
@@ -249,7 +249,7 @@ namespace API.DAO
                 {
                     if (reader.Read())
                     {
-                        ingresso = new Ingresso();
+                        Ingresso ingresso = new Ingresso();
                         ingresso.IdIngresso = reader.GetInt32("id_ingresso");
                         ingresso.CodigoQR = reader.IsDBNull("codigo_qr") ? "" : reader.GetString("codigo_qr");
                         ingresso.Valor = reader.GetDouble("valor");
@@ -273,7 +273,7 @@ namespace API.DAO
             {
                 connection.Close();
         }
-        return ingresso;
+        return ingressos;
         } 
 
         //metodo para retornar todos os ingressos disponiveis a serem validados

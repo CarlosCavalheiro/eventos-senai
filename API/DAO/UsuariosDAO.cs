@@ -193,8 +193,70 @@ namespace API.DAO
             }
         }
 
+        public void GravaToken(int id, string token){
+            string query = "UPDATE usuario SET token = @token WHERE id_usuario = @id_usuario";
+            
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@token", token);
+                command.Parameters.AddWithValue("@id_usuario", id);
+                command.ExecuteNonQuery();
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro ao atualizar token: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
 
-    }
+
+        }
+        public UsuarioInput RecuperaToken(int id){
+            string query = $"SELECT token, telefone FROM usuario WHERE id_usuario = {id}";
+            UsuarioInput usuario = new();
+
+            try
+            {
+                connection.Open();
+                MySqlCommand command = new MySqlCommand(query, connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        usuario.IdUsuario = id;
+                        usuario.Token = reader.IsDBNull("token") ? "" : reader.GetString("token");
+                        usuario.Telefone = reader.IsDBNull("telefone") ? "" : reader.GetString("telefone");
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                // Aqui você pode tratar exceções específicas do MySQL
+                Console.WriteLine($"Erro ao acessar o banco de dados MySQL: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Aqui você trata outras exceções gerais
+                Console.WriteLine($"Erro desconhecido: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+            
+            return usuario;
+        }
+    }   
 }
 
             

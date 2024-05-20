@@ -10,5 +10,11 @@ namespace API.Models
     {
         [Column("id_usuario")]
         public int IdUsuario { get; set; }
+
+        [Column("telefone")]
+        public string? Telefone { get; set; }
+
+        [Column("token")]
+        public string? Token { get; set; }
     }
 }

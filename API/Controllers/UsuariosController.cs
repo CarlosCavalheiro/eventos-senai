@@ -59,6 +59,28 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpPut("/token/{id}/{token}")]
+        public IActionResult GravaToken(int id, string token)
+        {
+            var existingUsuario = _usuarioDAO.GetUsuarioById(id);
+
+            if (existingUsuario == null)
+                return NotFound();
+
+            _usuarioDAO.GravaToken(id, token);
+            return Ok();
+        }
+
+        [HttpGet("/token/{id}")]
+        public IActionResult GetTokenById(int id)
+        {
+            var token = _usuarioDAO.RecuperaToken(id);
+            if (token == null)
+                return NotFound();
+            
+            return Ok(token);
+        }
+
         [HttpDelete("{id}")] 
         public IActionResult DeleteUsuario(int id)
         {
